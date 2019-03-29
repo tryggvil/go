@@ -69,6 +69,7 @@ func makeValue(r ref) Value {
 	return Value{ref: r, gcPtr: gcPtr}
 }
 
+//go:wasmimport finalizeRef go syscall/js.finalizeRef abi0
 func finalizeRef(r ref)
 
 func predefValue(id uint32, typeFlag byte) Value {
@@ -220,6 +221,7 @@ func ValueOf(x interface{}) Value {
 	}
 }
 
+//go:wasmimport stringVal go syscall/js.stringVal abi0
 func stringVal(x string) ref
 
 // Type represents the JavaScript type of a Value.
@@ -303,6 +305,7 @@ func (v Value) Get(p string) Value {
 	return r
 }
 
+//go:wasmimport valueGet go syscall/js.valueGet abi0
 func valueGet(v ref, p string) ref
 
 // Set sets the JavaScript property p of value v to ValueOf(x).
@@ -317,6 +320,7 @@ func (v Value) Set(p string, x interface{}) {
 	runtime.KeepAlive(xv)
 }
 
+//go:wasmimport valueSet go syscall/js.valueSet abi0
 func valueSet(v ref, p string, x ref)
 
 // Delete deletes the JavaScript property p of value v.
@@ -329,6 +333,7 @@ func (v Value) Delete(p string) {
 	runtime.KeepAlive(v)
 }
 
+//go:wasmimport valueDelete go syscall/js.valueDelete abi0
 func valueDelete(v ref, p string)
 
 // Index returns JavaScript index i of value v.
@@ -342,6 +347,7 @@ func (v Value) Index(i int) Value {
 	return r
 }
 
+//go:wasmimport valueIndex go syscall/js.valueIndex abi0
 func valueIndex(v ref, i int) ref
 
 // SetIndex sets the JavaScript index i of value v to ValueOf(x).
@@ -356,6 +362,7 @@ func (v Value) SetIndex(i int, x interface{}) {
 	runtime.KeepAlive(xv)
 }
 
+//go:wasmimport valueSetIndex go syscall/js.valueSetIndex abi0
 func valueSetIndex(v ref, i int, x ref)
 
 func makeArgs(args []interface{}) ([]Value, []ref) {
@@ -380,6 +387,7 @@ func (v Value) Length() int {
 	return r
 }
 
+//go:wasmimport valueLength go syscall/js.valueLength abi0
 func valueLength(v ref) int
 
 // Call does a JavaScript call to the method m of value v with the given arguments.
@@ -402,6 +410,7 @@ func (v Value) Call(m string, args ...interface{}) Value {
 	return makeValue(res)
 }
 
+//go:wasmimport valueCall go syscall/js.valueCall abi0
 func valueCall(v ref, m string, args []ref) (ref, bool)
 
 // Invoke does a JavaScript call of the value v with the given arguments.
@@ -421,6 +430,7 @@ func (v Value) Invoke(args ...interface{}) Value {
 	return makeValue(res)
 }
 
+//go:wasmimport valueInvoke go syscall/js.valueInvoke abi0
 func valueInvoke(v ref, args []ref) (ref, bool)
 
 // New uses JavaScript's "new" operator with value v as constructor and the given arguments.
@@ -440,6 +450,7 @@ func (v Value) New(args ...interface{}) Value {
 	return makeValue(res)
 }
 
+//go:wasmimport valueNew go syscall/js.valueNew abi0
 func valueNew(v ref, args []ref) (ref, bool)
 
 func (v Value) isNumber() bool {
@@ -539,8 +550,10 @@ func jsString(v Value) string {
 	return string(b)
 }
 
+//go:wasmimport valuePrepareString go syscall/js.valuePrepareString abi0
 func valuePrepareString(v ref) (ref, int)
 
+//go:wasmimport valueLoadString go syscall/js.valueLoadString abi0
 func valueLoadString(v ref, b []byte)
 
 // InstanceOf reports whether v is an instance of type t according to JavaScript's instanceof operator.
@@ -551,6 +564,7 @@ func (v Value) InstanceOf(t Value) bool {
 	return r
 }
 
+//go:wasmimport valueInstanceOf go syscall/js.valueInstanceOf abi0
 func valueInstanceOf(v ref, t ref) bool
 
 // A ValueError occurs when a Value method is invoked on
@@ -577,6 +591,7 @@ func CopyBytesToGo(dst []byte, src Value) int {
 	return n
 }
 
+//go:wasmimport copyBytesToGo go syscall/js.copyBytesToGo abi0
 func copyBytesToGo(dst []byte, src ref) (int, bool)
 
 // CopyBytesToJS copies bytes from src to the Uint8Array dst.
@@ -591,4 +606,5 @@ func CopyBytesToJS(dst Value, src []byte) int {
 	return n
 }
 
+//go:wasmimport copyBytesToJS go syscall/js.copyBytesToJS abi0
 func copyBytesToJS(dst ref, src []byte) (int, bool)

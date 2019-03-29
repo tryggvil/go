@@ -6,7 +6,10 @@
 
 package js
 
-import "sync"
+import (
+	"sync"
+	_ "unsafe"
+)
 
 var (
 	funcsMu    sync.Mutex
@@ -60,7 +63,7 @@ func (c Func) Release() {
 	funcsMu.Unlock()
 }
 
-// setEventHandler is defined in the runtime package.
+//go:linkname setEventHandler runtime.setEventHandler
 func setEventHandler(fn func())
 
 func init() {

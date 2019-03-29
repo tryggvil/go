@@ -363,6 +363,12 @@ func (w *objWriter) writeSym(s *LSym) {
 	if s.TopFrame() {
 		flags |= 1 << 4
 	}
+	if s.Func.WasmImport != nil {
+		flags |= 1 << 5
+		if s.Func.WasmImport.ABI0 {
+			flags |= 1 << 6
+		}
+	}
 	w.writeInt(flags)
 	w.writeInt(int64(0)) // TODO: remove at next object file rev
 
@@ -396,6 +402,21 @@ func (w *objWriter) writeSym(s *LSym) {
 		w.writeInt(int64(l))
 		w.writeRefIndex(call.Func)
 		w.writeInt(int64(call.ParentPC))
+	}
+
+	if wi := s.Func.WasmImport; wi != nil {
+		w.writeString(wi.Module)
+		w.writeString(wi.Name)
+		w.writeInt(int64(len(wi.Params)))
+		for _, f := range wi.Params {
+			w.writeInt(int64(f.Type))
+			w.writeInt(f.Offset)
+		}
+		w.writeInt(int64(len(wi.Results)))
+		for _, f := range wi.Results {
+			w.writeInt(int64(f.Type))
+			w.writeInt(f.Offset)
+		}
 	}
 }
 

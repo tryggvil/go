@@ -10,4 +10,5 @@
 
 package runtime
 
+//go:wasmimport walltime1 go runtime.walltime1 abi0
 func walltime1() (sec int64, nsec int32)
