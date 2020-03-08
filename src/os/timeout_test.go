@@ -4,6 +4,7 @@
 
 // +build !js
 // +build !plan9
+// +build !wasi
 // +build !windows
 
 package os_test
